@@ -1,50 +1,44 @@
-/*
- * grunt-shrink-selectors
- * https://github.com/alfonso/grunt-shrink-selectors
- *
- * Copyright (c) 2015 Alfonso Filho
- * Licensed under the MIT license.
- */
-
 'use strict';
 
 module.exports = function(grunt) {
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
+  grunt.registerMultiTask('shrink-selectors', 'CSS Renaming Tool', function() {
 
-  grunt.registerMultiTask('shrink_selectors', 'CSS Renaming Tool', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
+    var path = require('path');
+    var shrinkSelectors = require('shrink-selectors')();
 
-    // Iterate over all specified file groups.
+    var R     = require('ramda');
+    var find  = R.find;
+    var match = R.match;
+
+    var done = this.async();
+
+    var hasHtmlFiles = find(match(/html$/g));
+    var hasCssFiles = find(match(/css$/g));
+
     this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
 
-      // Handle options.
-      src += options.punctuation;
+      if(!hasHtmlFiles(f.src)){
+        grunt.log.error('Error: source files must have one html file at least.');
+        done(false);
+      }
 
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
+      if(!hasCssFiles(f.src)){
+        grunt.log.error('Error: source files must have one css file at least.');
+        done(false);
+      }
 
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
+      shrinkSelectors.shrink({
+        src: f.src,
+        dest: f.dest
+      }).then(function () {
+        grunt.log.ok('CSS Selectors Shinked!');
+        done();
+      }, function (err) {
+        grunt.log.error('Error: ', err);
+        done(false);
+      });
+
     });
   });
-
 };

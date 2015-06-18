@@ -29,21 +29,17 @@ module.exports = function(grunt) {
     },
 
     // Configuration to be run (and then tested).
-    shrink_selectors: {
-      default_options: {
+    'shrink-selectors': {
+      'default': {
         options: {
         },
         files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
-      },
-      custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!'
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
+          'tmp/default_options': [
+            'test/fixtures/a.css',
+            'test/fixtures/b.css',
+            'test/fixtures/a.html',
+            'test/fixtures/b.html'
+          ]
         }
       }
     },
@@ -65,7 +61,7 @@ module.exports = function(grunt) {
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'shrink_selectors', 'nodeunit']);
+  grunt.registerTask('test', ['clean', 'shrink-selectors', 'nodeunit']);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);

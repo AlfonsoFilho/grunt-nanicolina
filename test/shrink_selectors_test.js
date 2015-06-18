@@ -27,22 +27,20 @@ exports.shrink_selectors = {
     // setup here if necessary
     done();
   },
-  default_options: function(test) {
-    test.expect(1);
+  default: function(test) {
+    test.expect(2);
 
-    var actual = grunt.file.read('tmp/default_options');
-    var expected = grunt.file.read('test/expected/default_options');
-    test.equal(actual, expected, 'should describe what the default behavior is.');
+    var actual = '';
+    var expected = '';
 
-    test.done();
-  },
-  custom_options: function(test) {
-    test.expect(1);
+    actual = grunt.file.read('tmp/default_options/test/fixtures/a.css');
+    expected = grunt.file.read('test/expected/a.css');
+    test.equal(actual, expected, 'should refactor css.');
 
-    var actual = grunt.file.read('tmp/custom_options');
-    var expected = grunt.file.read('test/expected/custom_options');
-    test.equal(actual, expected, 'should describe what the custom option(s) behavior is.');
+    actual = grunt.file.read('tmp/default_options/test/fixtures/a.html');
+    expected = grunt.file.read('test/expected/a.html');
+    test.equal(actual, expected, 'should refactor html.');
 
     test.done();
-  },
+  }
 };
